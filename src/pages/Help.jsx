@@ -5,7 +5,7 @@ const faqs = [
   { q: "Apa arti status \"Serving\" pada transaksi?", a: "Pesanan sedang dibuat oleh barista, belum selesai." },
   { q: "Bagaimana mengubah shift staff?", a: "Fitur ini akan datang. Saat ini shift ditentukan saat menambah staff." },
   { q: "Apakah data transaksi bisa diekspor?", a: "Ya, di halaman Transactions ada tombol \"Export CSV\"." },
-  { q: "Bagaimana menghubungi support?", a: "Email support@brewly.id atau klik ikon chat di kanan bawah halaman ini." },
+  { q: "Bagaimana menghubungi support?", a: "Email support@brew.id atau klik ikon chat di kanan bawah halaman ini." },
 ];
 
 export default function Help() {
@@ -44,7 +44,7 @@ export default function Help() {
             <FileText size={16} style={{ color: "#111111" }} />
             <h3 className="text-sm font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Documentation</h3>
           </div>
-          <p className="text-xs" style={{ color: "#888888" }}>Lihat panduan lengkap penggunaan dashboard Brewly.</p>
+          <p className="text-xs" style={{ color: "#888888" }}>Lihat panduan lengkap penggunaan dashboard Brew.</p>
           <a href="#" className="text-xs flex items-center gap-1 hover:underline" style={{ color: "#111111" }}>
             Buka Dokumentasi <ExternalLink size={10} />
           </a>
@@ -56,8 +56,8 @@ export default function Help() {
             <h3 className="text-sm font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Contact Support</h3>
           </div>
           <p className="text-xs" style={{ color: "#888888" }}>Tim kami siap membantu lewat email atau chat.</p>
-          <a href="mailto:support@brewly.id" className="text-xs flex items-center gap-1 hover:underline" style={{ color: "#111111" }}>
-            support@brewly.id <ExternalLink size={10} />
+          <a href="mailto:support@brew.id" className="text-xs flex items-center gap-1 hover:underline" style={{ color: "#111111" }}>
+            support@brew.id <ExternalLink size={10} />
           </a>
         </div>
       </div>
