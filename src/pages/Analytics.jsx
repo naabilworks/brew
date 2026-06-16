@@ -1,11 +1,11 @@
 import { useState } from "react";
 import {
   TrendingUp, DollarSign, ShoppingBag, Users, Star,
-  Calendar, ChevronDown, ArrowUpRight, ArrowDownRight
+  ChevronDown, ArrowUpRight, ArrowDownRight
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Cell, Legend
+  Tooltip, ResponsiveContainer, Cell
 } from "recharts";
 
 const revenueDataSets = {
@@ -30,11 +30,11 @@ const categoryData = [
 ];
 
 const topStaff = [
-  { name: "Nurul Hidayah",  role: "Server",   orders: 142, rating: 4.9 },
-  { name: "Bayu Nugroho",   role: "Barista",  orders: 128, rating: 4.8 },
-  { name: "Andi Pratama",   role: "Cashier",  orders: 115, rating: 4.7 },
-  { name: "Budi Setiawan",  role: "Barista",  orders: 98,  rating: 4.6 },
-  { name: "Sari Dewi",      role: "Cashier",  orders: 87,  rating: 4.5 },
+  { name: "Nurul Hidayah",  role: "Server",  orders: 142, rating: 4.9 },
+  { name: "Bayu Nugroho",   role: "Barista", orders: 128, rating: 4.8 },
+  { name: "Andi Pratama",   role: "Cashier", orders: 115, rating: 4.7 },
+  { name: "Budi Setiawan",  role: "Barista", orders: 98,  rating: 4.6 },
+  { name: "Sari Dewi",      role: "Cashier", orders: 87,  rating: 4.5 },
 ];
 
 const dailyStats = {
@@ -51,26 +51,31 @@ const fmtShort = (v) => {
 function StatCard({ label, value, change, icon: Icon }) {
   const isPositive = change > 0;
   return (
-    <div className="rounded-xl p-4" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-      <div className="flex items-start justify-between mb-3">
+    <div className="rounded-xl p-3 sm:p-4" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+      <div className="flex items-start justify-between mb-2 sm:mb-3">
         <p className="text-xs uppercase tracking-widest" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>{label}</p>
         <Icon size={16} style={{ color: "#111111", opacity: 0.3 }} />
       </div>
-      <p className="text-2xl font-semibold mb-1" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{value}</p>
+      <p className="text-lg sm:text-2xl font-semibold mb-1" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{value}</p>
       <div className="flex items-center gap-1">
-        {isPositive ? <ArrowUpRight size={12} style={{ color: "#111111" }} /> : <ArrowDownRight size={12} style={{ color: "#cccccc" }} />}
-        <span className="text-xs font-medium" style={{ color: isPositive ? "#111111" : "#cccccc" }}>
+        {isPositive
+          ? <ArrowUpRight size={12} style={{ color: "#111111" }} />
+          : <ArrowDownRight size={12} style={{ color: "#cccccc" }} />}
+        <span className="text-xs font-medium hidden sm:inline" style={{ color: isPositive ? "#111111" : "#cccccc" }}>
           {Math.abs(change)}% vs yesterday
+        </span>
+        <span className="text-xs font-medium sm:hidden" style={{ color: isPositive ? "#111111" : "#cccccc" }}>
+          {Math.abs(change)}%
         </span>
       </div>
     </div>
   );
 }
 
-function CustomTooltip({ active, payload, label, prefix = "Rp", format = fmt }) {
+function CustomTooltip({ active, payload, label, format = fmt }) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "#111111", color: "#ffffff", border: "none" }}>
+      <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "#111111", color: "#ffffff" }}>
         <p className="mb-1" style={{ opacity: 0.7 }}>{label}</p>
         {payload.map((entry, idx) => (
           <p key={idx} style={{ color: "#ffffff" }}>
@@ -85,7 +90,6 @@ function CustomTooltip({ active, payload, label, prefix = "Rp", format = fmt }) 
 
 export default function Analytics() {
   const [period, setPeriod] = useState("This Week");
-
   const revenueData = revenueDataSets[period];
 
   const calcChange = (today, yesterday) => {
@@ -93,14 +97,14 @@ export default function Analytics() {
     return Math.round(((today - yesterday) / yesterday) * 100);
   };
 
-  const revenueChange = calcChange(dailyStats.today.revenue, dailyStats.yesterday.revenue);
-  const ordersChange  = calcChange(dailyStats.today.orders, dailyStats.yesterday.orders);
-  const avgChange     = calcChange(dailyStats.today.avgValue, dailyStats.yesterday.avgValue);
-  const tablesChange  = calcChange(dailyStats.today.tables, dailyStats.yesterday.tables);
+  const revenueChange = calcChange(dailyStats.today.revenue,   dailyStats.yesterday.revenue);
+  const ordersChange  = calcChange(dailyStats.today.orders,    dailyStats.yesterday.orders);
+  const avgChange     = calcChange(dailyStats.today.avgValue,  dailyStats.yesterday.avgValue);
+  const tablesChange  = calcChange(dailyStats.today.tables,    dailyStats.yesterday.tables);
 
   return (
-    <div className="p-6 space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
-      
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
+
       {/* Header */}
       <div className="fade-up">
         <div className="flex items-center gap-2 mb-1">
@@ -108,13 +112,13 @@ export default function Analytics() {
           <span style={{ color: "#e8e8e3" }}>/</span>
           <span className="text-xs" style={{ color: "#aaaaaa" }}>Analytics</span>
         </div>
-        <div className="flex items-end justify-between">
-          <h2 className="text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <h2 className="text-xl sm:text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
             Analytics
           </h2>
           <div className="relative">
             <select
-              className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg outline-none appearance-none cursor-pointer"
+              className="text-xs px-3 py-2 pr-7 rounded-lg outline-none appearance-none cursor-pointer"
               style={{ background: "#ffffff", border: "1px solid #e8e8e3", color: "#555555" }}
               value={period}
               onChange={e => setPeriod(e.target.value)}
@@ -123,35 +127,37 @@ export default function Analytics() {
               <option>Last Week</option>
               <option>This Month</option>
             </select>
-            <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "#aaaaaa" }} />
+            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "#aaaaaa" }} />
           </div>
         </div>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-4 gap-4 fade-up-1">
-        <StatCard label="Revenue"     value={fmtShort(dailyStats.today.revenue)} change={revenueChange} icon={DollarSign} />
-        <StatCard label="Orders"      value={dailyStats.today.orders}           change={ordersChange}  icon={ShoppingBag} />
-        <StatCard label="Avg. Order"  value={fmtShort(dailyStats.today.avgValue)} change={avgChange}   icon={TrendingUp} />
-        <StatCard label="Tables"      value={`${dailyStats.today.tables}/20`}   change={tablesChange}  icon={Users} />
+      {/* Stat Cards - 2 col mobile, 4 desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 fade-up-1">
+        <StatCard label="Revenue"    value={fmtShort(dailyStats.today.revenue)}   change={revenueChange} icon={DollarSign} />
+        <StatCard label="Orders"     value={dailyStats.today.orders}              change={ordersChange}  icon={ShoppingBag} />
+        <StatCard label="Avg. Order" value={fmtShort(dailyStats.today.avgValue)}  change={avgChange}     icon={TrendingUp} />
+        <StatCard label="Tables"     value={`${dailyStats.today.tables}/20`}      change={tablesChange}  icon={Users} />
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-3 gap-4 fade-up-2">
+      {/* Charts - stack on mobile, side by side on desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 fade-up-2">
         {/* Revenue Trend */}
-        <div className="col-span-2 rounded-xl p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Revenue Trend</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={revenueData}>
+        <div className="sm:col-span-2 rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+            Revenue Trend
+          </h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={revenueData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#111111" stopOpacity={0.08}/>
-                  <stop offset="95%" stopColor="#111111" stopOpacity={0}/>
+                  <stop offset="5%"  stopColor="#111111" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#111111" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
-              <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#cccccc" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#cccccc" }} axisLine={false} tickLine={false} tickFormatter={fmtShort} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} tickFormatter={fmtShort} />
               <Tooltip content={<CustomTooltip format={fmt} />} />
               <Area type="monotone" dataKey="revenue" stroke="#111111" strokeWidth={1.5} fill="url(#revGradient)" />
             </AreaChart>
@@ -159,15 +165,17 @@ export default function Analytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="rounded-xl p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>By Category</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={categoryData}>
+        <div className="rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+            By Category
+          </h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={categoryData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
               <XAxis dataKey="category" tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip prefix="" format={(v) => `${v} items`} />} />
-              <Bar dataKey="sales" radius={[4, 4, 0, 0]} barSize={28}>
+              <Tooltip content={<CustomTooltip format={(v) => `${v} items`} />} />
+              <Bar dataKey="sales" radius={[4, 4, 0, 0]} barSize={24}>
                 {categoryData.map((entry, index) => (
                   <Cell key={index} fill={index === 0 ? "#111111" : index === 1 ? "#cccccc" : "#e8e8e3"} />
                 ))}
@@ -178,26 +186,35 @@ export default function Analytics() {
       </div>
 
       {/* Top Staff */}
-      <div className="rounded-xl p-5 fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-        <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Top Performing Staff</h3>
+      <div className="rounded-xl p-4 sm:p-5 fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+          Top Performing Staff
+        </h3>
         <div className="space-y-2">
           {topStaff.map((s, i) => (
-            <div key={s.name} className="flex items-center gap-3 py-2" style={{ borderBottom: i < topStaff.length - 1 ? "1px solid #f5f5f0" : "none" }}>
-              <span className="text-xs font-mono w-5" style={{ color: i < 3 ? "#111111" : "#cccccc", fontWeight: i === 0 ? 700 : 400 }}>
+            <div
+              key={s.name}
+              className="flex items-center gap-2 sm:gap-3 py-2"
+              style={{ borderBottom: i < topStaff.length - 1 ? "1px solid #f5f5f0" : "none" }}
+            >
+              <span className="text-xs font-mono w-4 flex-shrink-0" style={{ color: i < 3 ? "#111111" : "#cccccc", fontWeight: i === 0 ? 700 : 400 }}>
                 {i + 1}
               </span>
-              <div className="flex items-center justify-center rounded-full flex-shrink-0" style={{ width: 28, height: 28, background: i === 0 ? "#111111" : "#f5f5f0", color: i === 0 ? "#ffffff" : "#aaaaaa", fontSize: 11, fontWeight: 600 }}>
+              <div
+                className="flex items-center justify-center rounded-full flex-shrink-0"
+                style={{ width: 28, height: 28, background: i === 0 ? "#111111" : "#f5f5f0", color: i === 0 ? "#ffffff" : "#aaaaaa", fontSize: 11, fontWeight: 600 }}
+              >
                 {s.name.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate" style={{ color: "#111111" }}>{s.name}</p>
                 <p className="text-xs" style={{ color: "#aaaaaa" }}>{s.role}</p>
               </div>
-              <div className="text-right">
+              <div className="text-right flex-shrink-0">
                 <p className="text-sm font-mono font-medium" style={{ color: "#111111" }}>{s.orders}</p>
-                <p className="text-xs" style={{ color: "#aaaaaa" }}>orders</p>
+                <p className="text-xs hidden sm:block" style={{ color: "#aaaaaa" }}>orders</p>
               </div>
-              <div className="flex items-center gap-1 min-w-[50px] justify-end">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 <Star size={12} style={{ color: "#111111", fill: "#111111" }} />
                 <span className="text-sm font-mono" style={{ color: "#111111" }}>{s.rating}</span>
               </div>

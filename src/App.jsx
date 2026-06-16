@@ -12,24 +12,45 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [page, setPage] = useState("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Tangkap event navigasi dari Topbar (Settings, Help)
   useEffect(() => {
     const handler = (e) => setPage(e.detail);
     window.addEventListener("navigate", handler);
     return () => window.removeEventListener("navigate", handler);
   }, []);
 
-  // Cek apakah di halaman login
   if (window.location.pathname === "/login") {
     return <Login />;
   }
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#f5f5f0" }}>
-      <Sidebar activePage={page} onNavigate={setPage} />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed lg:static z-30 h-full transition-transform duration-300 lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Sidebar
+          activePage={page}
+          onNavigate={(key) => {
+            setPage(key);
+            setSidebarOpen(false);
+          }}
+        />
+      </div>
+
+      <div className="flex flex-col flex-1 overflow-hidden min-w-0">
+        <Topbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
         <main className="flex-1 overflow-y-auto">
           {page === "overview"      && <Overview />}
           {page === "transactions"  && <Transactions />}

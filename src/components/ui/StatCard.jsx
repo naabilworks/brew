@@ -29,17 +29,17 @@ export default function StatCard({ label, value, change, trend, icon, delay = 0 
         <Icon size={16} style={{ color: "#111111", opacity: 0.3 }} />
       </div>
       <p
-        className="font-bold mb-1 tracking-tight"
+        className="font-bold mb-1 tracking-tight break-all"
         style={{
           color: "#111111",
           fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
-          fontSize: 28,
+          fontSize: "clamp(18px, 4vw, 26px)", // ← responsive font size
           lineHeight: 1.1,
         }}
       >
         {value}
       </p>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 flex-wrap">
         <span
           className="text-xs font-medium"
           style={{ color: isUp ? "#3a5a40" : "#aaaaaa" }}

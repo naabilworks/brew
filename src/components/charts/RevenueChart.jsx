@@ -32,15 +32,15 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function RevenueChart() {
   return (
-    <div className="rounded-xl p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+    <div className="rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
       <h3
         className="text-sm font-semibold mb-4"
         style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}
       >
         Revenue per Hour
       </h3>
-      <ResponsiveContainer width="100%" height={240}>
-        <AreaChart data={revenueHourly}>
+      <ResponsiveContainer width="100%" height={220}>
+        <AreaChart data={revenueHourly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#3a5a40" stopOpacity={0.08} />
@@ -50,12 +50,12 @@ export default function RevenueChart() {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
           <XAxis
             dataKey="hour"
-            tick={{ fontSize: 11, fill: "#cccccc" }}
+            tick={{ fontSize: 10, fill: "#cccccc" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#cccccc" }}
+            tick={{ fontSize: 10, fill: "#cccccc" }}
             axisLine={false}
             tickLine={false}
             tickFormatter={fmtShort}

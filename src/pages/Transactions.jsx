@@ -19,15 +19,15 @@ const allOrders = [
 const fmt = (v) => `Rp ${v.toLocaleString("id-ID")}`;
 
 const statusStyle = {
-  Completed: { color: "#3a5a40", bg: "#edf3ee", dot: "#3a5a40" }, // olive green
-  Serving:   { color: "#8b6f4c", bg: "#faf6f0", dot: "#8b6f4c" }, // amber warm
-  Cancelled: { color: "#aaaaaa", bg: "#fafafa", dot: "#cccccc" }, // tetap netral
+  Completed: { color: "#3a5a40", bg: "#edf3ee", dot: "#3a5a40" },
+  Serving:   { color: "#8b6f4c", bg: "#faf6f0", dot: "#8b6f4c" },
+  Cancelled: { color: "#aaaaaa", bg: "#fafafa", dot: "#cccccc" },
 };
 
 export default function Transactions() {
-  const [search, setSearch]     = useState("");
+  const [search, setSearch]       = useState("");
   const [statusFilter, setStatus] = useState("All");
-  const [sortDir, setSortDir]   = useState("desc");
+  const [sortDir, setSortDir]     = useState("desc");
 
   const statuses = ["All", "Completed", "Serving", "Cancelled"];
 
@@ -38,28 +38,15 @@ export default function Transactions() {
        o.items.toLowerCase().includes(search.toLowerCase()) ||
        o.cashier.toLowerCase().includes(search.toLowerCase()))
     )
-    .sort((a, b) => sortDir === "desc"
-      ? b.total - a.total
-      : a.total - b.total
-    );
+    .sort((a, b) => sortDir === "desc" ? b.total - a.total : a.total - b.total);
 
   const totalRevenue = filtered
     .filter(o => o.status === "Completed")
     .reduce((sum, o) => sum + o.total, 0);
 
-  // ✅ Fungsi Export CSV
   const exportCSV = () => {
     const headers = ["Order ID", "Table", "Cashier", "Items", "Total", "Method", "Status", "Time"];
-    const rows = filtered.map(o => [
-      o.id,
-      o.table,
-      o.cashier,
-      `"${o.items}"`, // bungkus dengan kutip agar koma di dalam items tidak pecah
-      o.total,
-      o.method,
-      o.status,
-      o.time,
-    ]);
+    const rows = filtered.map(o => [o.id, o.table, o.cashier, `"${o.items}"`, o.total, o.method, o.status, o.time]);
     const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -72,7 +59,7 @@ export default function Transactions() {
   };
 
   return (
-    <div className="p-6 space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
 
       {/* Header */}
       <div className="fade-up">
@@ -81,23 +68,22 @@ export default function Transactions() {
           <span style={{ color: "#e8e8e3" }}>/</span>
           <span className="text-xs" style={{ color: "#aaaaaa" }}>Transactions</span>
         </div>
-        <div className="flex items-end justify-between">
-          <h2 className="text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <h2 className="text-xl sm:text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
             Transactions
           </h2>
-          {/* ✅ Tombol Export CSV dengan onClick */}
           <button
             onClick={exportCSV}
             className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-colors"
-            style={{ background: "#111111", color: "#ffffff", border: "1px solid #111111" }}
+            style={{ background: "#111111", color: "#ffffff" }}
           >
             <Download size={12} /> Export CSV
           </button>
         </div>
       </div>
 
-      {/* Summary strip */}
-      <div className="grid grid-cols-3 gap-4 fade-up-1">
+      {/* Summary strip - 1 col mobile, 3 desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 fade-up-1">
         {[
           { label: "Total orders",    value: filtered.length },
           { label: "Completed",       value: filtered.filter(o => o.status === "Completed").length },
@@ -105,15 +91,15 @@ export default function Transactions() {
         ].map(s => (
           <div key={s.label} className="rounded-xl p-4" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
             <p className="text-xs uppercase tracking-widest mb-2" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>{s.label}</p>
-            <p className="text-xl font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{s.value}</p>
+            <p className="text-lg sm:text-xl font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{s.value}</p>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 fade-up-2">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 fade-up-2">
         {/* Search */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg flex-1 max-w-xs" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg flex-1" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
           <Search size={13} style={{ color: "#aaaaaa" }} />
           <input
             type="text"
@@ -125,37 +111,84 @@ export default function Transactions() {
           />
         </div>
 
-        {/* Status tabs */}
-        <div className="flex gap-1 p-1 rounded-lg" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          {statuses.map(s => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className="text-xs px-3 py-1.5 rounded-md transition-all"
-              style={{
-                background: statusFilter === s ? "#111111" : "transparent",
-                color:      statusFilter === s ? "#ffffff" : "#aaaaaa",
-              }}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+        <div className="flex gap-2">
+          {/* Status tabs */}
+          <div className="flex gap-1 p-1 rounded-lg flex-1 overflow-x-auto" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+            {statuses.map(s => (
+              <button
+                key={s}
+                onClick={() => setStatus(s)}
+                className="text-xs px-2 sm:px-3 py-1.5 rounded-md transition-all whitespace-nowrap"
+                style={{
+                  background: statusFilter === s ? "#111111" : "transparent",
+                  color:      statusFilter === s ? "#ffffff" : "#aaaaaa",
+                }}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
 
-        {/* Sort */}
-        <button
-          onClick={() => setSortDir(d => d === "desc" ? "asc" : "desc")}
-          className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg"
-          style={{ background: "#ffffff", border: "1px solid #e8e8e3", color: "#555555" }}
-        >
-          <Filter size={12} />
-          Total {sortDir === "desc" ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
-        </button>
+          {/* Sort */}
+          <button
+            onClick={() => setSortDir(d => d === "desc" ? "asc" : "desc")}
+            className="flex items-center gap-1 text-xs px-3 py-2 rounded-lg flex-shrink-0"
+            style={{ background: "#ffffff", border: "1px solid #e8e8e3", color: "#555555" }}
+          >
+            <Filter size={12} />
+            <span className="hidden sm:inline">Total</span>
+            {sortDir === "desc" ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl overflow-hidden fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-        {/* Table header */}
+      {/* Mobile: Card layout */}
+      <div className="flex flex-col gap-2 sm:hidden fade-up-3">
+        {filtered.length === 0 ? (
+          <div className="py-16 text-center rounded-xl" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+            <p className="text-sm" style={{ color: "#cccccc" }}>No orders found</p>
+          </div>
+        ) : (
+          filtered.map((order) => {
+            const s = statusStyle[order.status];
+            return (
+              <div
+                key={order.id}
+                className="rounded-xl p-4"
+                style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}
+              >
+                {/* Top row */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-medium" style={{ color: "#111111" }}>{order.id}</span>
+                    <span className="text-xs" style={{ color: "#aaaaaa" }}>{order.table}</span>
+                    <span className="text-xs" style={{ color: "#aaaaaa" }}>·</span>
+                    <span className="text-xs" style={{ color: "#aaaaaa" }}>{order.cashier}</span>
+                  </div>
+                  <span className="text-xs font-mono" style={{ color: "#aaaaaa" }}>{order.time}</span>
+                </div>
+
+                {/* Items */}
+                <p className="text-xs mb-3 truncate" style={{ color: "#888888" }}>{order.items}</p>
+
+                {/* Bottom row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.dot }} />
+                    <span className="text-xs font-medium" style={{ color: s.color }}>{order.status}</span>
+                    <span className="text-xs" style={{ color: "#cccccc" }}>·</span>
+                    <span className="text-xs" style={{ color: "#aaaaaa" }}>{order.method}</span>
+                  </div>
+                  <span className="text-xs font-mono font-semibold" style={{ color: "#111111" }}>{fmt(order.total)}</span>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop: Table layout */}
+      <div className="hidden sm:block rounded-xl overflow-hidden fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
         <div
           className="grid text-xs px-5 py-3"
           style={{
@@ -175,7 +208,6 @@ export default function Transactions() {
           <span className="text-right">Time</span>
         </div>
 
-        {/* Rows */}
         {filtered.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-sm" style={{ color: "#cccccc" }}>No orders found</p>

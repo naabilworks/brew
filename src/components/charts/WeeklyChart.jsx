@@ -28,29 +28,29 @@ export default function WeeklyChart() {
   const max = Math.max(...weeklySales.map((d) => d.sales));
 
   return (
-    <div className="rounded-xl p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+    <div className="rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
       <h3
         className="text-sm font-semibold mb-4"
         style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}
       >
         This Week
       </h3>
-      <ResponsiveContainer width="100%" height={240}>
-        <BarChart data={weeklySales}>
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={weeklySales} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
           <XAxis
             dataKey="day"
-            tick={{ fontSize: 11, fill: "#cccccc" }}
+            tick={{ fontSize: 10, fill: "#cccccc" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#cccccc" }}
+            tick={{ fontSize: 10, fill: "#cccccc" }}
             axisLine={false}
             tickLine={false}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="sales" radius={[4, 4, 0, 0]} barSize={28}>
+          <Bar dataKey="sales" radius={[4, 4, 0, 0]} barSize={20}>
             {weeklySales.map((entry, index) => (
               <Cell
                 key={index}
