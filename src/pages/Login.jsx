@@ -2,7 +2,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f5f0" }}>
       <div className="rounded-xl p-8 w-full max-w-sm" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-        <h1 className="text-2xl font-semibold mb-6" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Brewly Login</h1>
+        <h1 className="text-2xl font-semibold mb-6" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Brew Login</h1>
         <div className="space-y-4">
           <input
             type="text"

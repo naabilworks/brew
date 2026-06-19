@@ -20,23 +20,43 @@ const roles    = ["All", "Cashier", "Barista", "Server"];
 const shifts   = ["All", "Morning", "Afternoon", "Evening"];
 const statuses = ["All", "On Duty", "Break", "Off Duty"];
 
+/* ---------- Palette (matched to Transactions / Overview / Analytics) ---------- */
+const COLORS = {
+  bg: "#f5f0e8",
+  card: "#ffffff",
+  border: "#e8ddc9",
+  rowBorder: "#f1e9da",
+  headerBg: "#faf6ee",
+  accent: "#c17a4f",
+  accentSoft: "rgba(193, 122, 79, 0.14)",
+  text: "#2b211b",
+  textMid: "#6f6354",
+  textMuted: "#9c8f7c",
+};
+
+/* Reusable style untuk semua angka agar konsisten (Plus Jakarta Sans, bold) */
+const numberStyle = {
+  fontFamily: "'Plus Jakarta Sans', sans-serif",
+  fontWeight: 700,
+};
+
 const statusStyle = {
-  "On Duty":  { bg: "#edf3ee", color: "#3a5a40", dot: "#3a5a40" },
-  "Break":    { bg: "#faf6f0", color: "#8b6f4c", dot: "#8b6f4c" },
-  "Off Duty": { bg: "#fafafa", color: "#cccccc", dot: "#cccccc" },
+  "On Duty":  { bg: "rgba(58, 122, 76, 0.1)",   color: "#3a7a4c",     dot: "#3a7a4c" },
+  "Break":    { bg: "rgba(193, 122, 79, 0.12)", color: COLORS.accent, dot: COLORS.accent },
+  "Off Duty": { bg: COLORS.headerBg,            color: COLORS.textMuted, dot: COLORS.textMuted },
 };
 
 function FilterGroup({ options, selected, setSelected }) {
   return (
-    <div className="flex gap-1 p-1 rounded-lg flex-shrink-0" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+    <div className="flex gap-1 p-1 rounded-lg flex-shrink-0" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
       {options.map(o => (
         <button
           key={o}
           onClick={() => setSelected(o)}
           className="text-xs px-2 sm:px-3 py-1.5 rounded-md transition-all whitespace-nowrap"
           style={{
-            background: selected === o ? "#111111" : "transparent",
-            color:      selected === o ? "#ffffff" : "#aaaaaa",
+            background: selected === o ? COLORS.accent : "transparent",
+            color:      selected === o ? "#ffffff" : COLORS.textMuted,
           }}
         >
           {o}
@@ -91,23 +111,23 @@ export default function Staff() {
   const topPerf     = staffList.reduce((top, s) => s.performance > top.performance ? s : top, staffList[0]);
 
   return (
-    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: COLORS.bg, minHeight: "100%" }}>
 
       {/* Header */}
       <div className="fade-up">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs uppercase tracking-widest" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>Dashboard</span>
-          <span style={{ color: "#e8e8e3" }}>/</span>
-          <span className="text-xs" style={{ color: "#aaaaaa" }}>Staff</span>
+          <span className="text-xs uppercase tracking-widest" style={{ color: COLORS.textMuted, letterSpacing: "0.1em" }}>Dashboard</span>
+          <span style={{ color: COLORS.border }}>/</span>
+          <span className="text-xs" style={{ color: COLORS.accent }}>Staff</span>
         </div>
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h2 className="text-xl sm:text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
+          <h2 className="text-xl sm:text-2xl" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
             Staff
           </h2>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg"
-            style={{ background: "#111111", color: "#ffffff" }}
+            style={{ background: COLORS.accent, color: "#ffffff" }}
           >
             <Plus size={12} /> Add Staff
           </button>
@@ -117,14 +137,23 @@ export default function Staff() {
       {/* Summary - 2 col mobile, 4 desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 fade-up-1">
         {[
-          { label: "Total Staff",      value: staffList.length },
-          { label: "On Duty",          value: onDutyCount },
-          { label: "Avg Performance",  value: `${avgPerf}%` },
-          { label: "Top Performer",    value: topPerf.name.split(" ")[0] },
+          { label: "Total Staff",      value: staffList.length,    numeric: true },
+          { label: "On Duty",          value: onDutyCount,         numeric: true },
+          { label: "Avg Performance",  value: `${avgPerf}%`,       numeric: true },
+          { label: "Top Performer",    value: topPerf.name.split(" ")[0], numeric: false },
         ].map(card => (
-          <div key={card.label} className="rounded-xl p-3 sm:p-4" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-            <p className="text-xs uppercase tracking-widest mb-1 sm:mb-2" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>{card.label}</p>
-            <p className="text-base sm:text-xl font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{card.value}</p>
+          <div key={card.label} className="rounded-xl p-3 sm:p-4" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+            <p className="text-xs uppercase tracking-widest mb-1 sm:mb-2" style={{ color: COLORS.textMuted, letterSpacing: "0.1em" }}>{card.label}</p>
+            <p
+              className="text-base sm:text-xl"
+              style={
+                card.numeric
+                  ? { color: COLORS.text, ...numberStyle }
+                  : { color: COLORS.text, fontFamily: "'Playfair Display', serif", fontWeight: 600 }
+              }
+            >
+              {card.value}
+            </p>
           </div>
         ))}
       </div>
@@ -132,13 +161,13 @@ export default function Staff() {
       {/* Filters */}
       <div className="flex flex-col gap-2 fade-up-2">
         {/* Search */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          <Search size={13} style={{ color: "#aaaaaa" }} />
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+          <Search size={13} style={{ color: COLORS.textMuted }} />
           <input
             type="text"
             placeholder="Search name or role..."
             className="bg-transparent text-xs outline-none w-full"
-            style={{ color: "#555555" }}
+            style={{ color: COLORS.textMid }}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -152,7 +181,7 @@ export default function Staff() {
           <button
             onClick={() => setSortDir(d => d === "desc" ? "asc" : "desc")}
             className="flex items-center gap-1 text-xs px-3 py-2 rounded-lg flex-shrink-0"
-            style={{ background: "#ffffff", border: "1px solid #e8e8e3", color: "#555555" }}
+            style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, color: COLORS.textMid }}
           >
             Perf {sortDir === "desc" ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
           </button>
@@ -162,9 +191,9 @@ export default function Staff() {
       {/* Mobile: Card layout */}
       <div className="flex flex-col gap-2 sm:hidden fade-up-3">
         {filtered.length === 0 ? (
-          <div className="py-16 text-center rounded-xl" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-            <Users size={24} style={{ color: "#e8e8e3", margin: "0 auto 8px" }} />
-            <p className="text-sm" style={{ color: "#cccccc" }}>No staff found</p>
+          <div className="py-16 text-center rounded-xl" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+            <Users size={24} style={{ color: COLORS.border, margin: "0 auto 8px" }} />
+            <p className="text-sm" style={{ color: COLORS.textMuted }}>No staff found</p>
           </div>
         ) : (
           filtered.map((staff) => {
@@ -173,20 +202,20 @@ export default function Staff() {
               <div
                 key={staff.id}
                 className="rounded-xl p-4"
-                style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}
+                style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}
               >
                 {/* Top row */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 min-w-0">
                     <div
                       className="flex items-center justify-center rounded-full flex-shrink-0 text-xs font-semibold"
-                      style={{ width: 32, height: 32, background: "#f5f5f0", color: "#555555" }}
+                      style={{ width: 32, height: 32, background: COLORS.headerBg, color: COLORS.textMid }}
                     >
                       {staff.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium truncate" style={{ color: "#111111" }}>{staff.name}</p>
-                      <p className="text-xs" style={{ color: "#aaaaaa" }}>{staff.role} · {staff.shift}</p>
+                      <p className="text-sm font-medium truncate" style={{ color: COLORS.text }}>{staff.name}</p>
+                      <p className="text-xs" style={{ color: COLORS.textMuted }}>{staff.role} · {staff.shift}</p>
                     </div>
                   </div>
                   <span
@@ -202,16 +231,16 @@ export default function Staff() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
-                      <Star size={12} style={{ color: "#111111", fill: staff.performance >= 90 ? "#111111" : "none" }} />
-                      <span className="text-sm font-mono font-medium" style={{ color: "#111111" }}>{staff.performance}%</span>
+                      <Star size={12} style={{ color: COLORS.accent, fill: staff.performance >= 90 ? COLORS.accent : "none" }} />
+                      <span className="text-sm" style={{ color: COLORS.text, ...numberStyle }}>{staff.performance}%</span>
                     </div>
-                    <div className="flex items-center gap-1" style={{ color: "#aaaaaa" }}>
+                    <div className="flex items-center gap-1" style={{ color: COLORS.textMuted }}>
                       <MapPin size={11} />
                       <span className="text-xs">{staff.location}</span>
                     </div>
-                    <div className="flex items-center gap-1" style={{ color: "#aaaaaa" }}>
+                    <div className="flex items-center gap-1" style={{ color: COLORS.textMuted }}>
                       <Clock size={11} />
-                      <span className="text-xs">{staff.since}</span>
+                      <span className="text-xs" style={numberStyle}>{staff.since}</span>
                     </div>
                   </div>
 
@@ -221,14 +250,14 @@ export default function Staff() {
                       <button
                         onClick={() => deleteStaff(staff.id)}
                         className="text-xs px-2 py-1 rounded"
-                        style={{ background: "#111111", color: "#ffffff" }}
+                        style={{ background: COLORS.accent, color: "#ffffff" }}
                       >
                         Sure
                       </button>
                       <button
                         onClick={() => setShowDeleteId(null)}
                         className="text-xs px-2 py-1 rounded"
-                        style={{ background: "#f5f5f0", color: "#aaaaaa" }}
+                        style={{ background: COLORS.headerBg, color: COLORS.textMuted }}
                       >
                         No
                       </button>
@@ -237,7 +266,7 @@ export default function Staff() {
                     <button
                       onClick={() => setShowDeleteId(staff.id)}
                       className="p-1.5 rounded-md"
-                      style={{ color: "#aaaaaa", background: "#f5f5f0" }}
+                      style={{ color: COLORS.textMuted, background: COLORS.headerBg }}
                     >
                       <Trash2 size={13} />
                     </button>
@@ -250,14 +279,14 @@ export default function Staff() {
       </div>
 
       {/* Desktop: Table layout */}
-      <div className="hidden sm:block rounded-xl overflow-hidden fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+      <div className="hidden sm:block rounded-xl overflow-hidden fade-up-3" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
         <div
           className="grid text-xs px-5 py-3"
           style={{
             gridTemplateColumns: "1fr 90px 80px 90px 90px 90px 90px",
-            color: "#cccccc",
-            borderBottom: "1px solid #f0f0eb",
-            background: "#fafafa",
+            color: COLORS.textMuted,
+            borderBottom: `1px solid ${COLORS.border}`,
+            background: COLORS.headerBg,
           }}
         >
           <span>Name</span>
@@ -271,8 +300,8 @@ export default function Staff() {
 
         {filtered.length === 0 ? (
           <div className="py-16 text-center">
-            <Users size={24} style={{ color: "#e8e8e3", margin: "0 auto 8px" }} />
-            <p className="text-sm" style={{ color: "#cccccc" }}>No staff found</p>
+            <Users size={24} style={{ color: COLORS.border, margin: "0 auto 8px" }} />
+            <p className="text-sm" style={{ color: COLORS.textMuted }}>No staff found</p>
           </div>
         ) : (
           filtered.map((staff, i) => {
@@ -283,27 +312,27 @@ export default function Staff() {
                 className="grid items-center px-5 py-3 text-xs transition-colors"
                 style={{
                   gridTemplateColumns: "1fr 90px 80px 90px 90px 90px 90px",
-                  borderBottom: i < filtered.length - 1 ? "1px solid #f5f5f0" : "none",
+                  borderBottom: i < filtered.length - 1 ? `1px solid ${COLORS.rowBorder}` : "none",
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = "#fafafa"}
+                onMouseEnter={e => e.currentTarget.style.background = COLORS.headerBg}
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className="flex items-center justify-center rounded-full flex-shrink-0"
-                    style={{ width: 28, height: 28, background: "#f5f5f0", color: "#aaaaaa", fontSize: 11, fontWeight: 600 }}
+                    style={{ width: 28, height: 28, background: COLORS.headerBg, color: COLORS.textMuted, fontSize: 11, fontWeight: 600 }}
                   >
                     {staff.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="font-medium" style={{ color: "#111111" }}>{staff.name}</p>
+                    <p className="font-medium" style={{ color: COLORS.text }}>{staff.name}</p>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full w-fit text-xs" style={{ background: "#f5f5f0", color: "#888888" }}>{staff.role}</span>
-                <span style={{ color: "#555555" }}>{staff.shift}</span>
+                <span className="px-2 py-0.5 rounded-full w-fit text-xs" style={{ background: COLORS.headerBg, color: COLORS.textMid }}>{staff.role}</span>
+                <span style={{ color: COLORS.textMid }}>{staff.shift}</span>
                 <div className="flex items-center justify-center gap-1.5">
-                  <Star size={12} style={{ color: "#111111", fill: staff.performance >= 90 ? "#111111" : "none" }} />
-                  <span className="font-mono font-medium" style={{ color: "#111111" }}>{staff.performance}%</span>
+                  <Star size={12} style={{ color: COLORS.accent, fill: staff.performance >= 90 ? COLORS.accent : "none" }} />
+                  <span style={{ color: COLORS.text, ...numberStyle }}>{staff.performance}%</span>
                 </div>
                 <div className="flex justify-center">
                   <span
@@ -314,13 +343,13 @@ export default function Staff() {
                     {staff.status}
                   </span>
                 </div>
-                <div className="flex items-center gap-1" style={{ color: "#aaaaaa" }}>
+                <div className="flex items-center gap-1" style={{ color: COLORS.textMuted }}>
                   <MapPin size={11} />
                   <span>{staff.location}</span>
                 </div>
-                <div className="flex items-center justify-center gap-1" style={{ color: "#aaaaaa" }}>
+                <div className="flex items-center justify-center gap-1" style={{ color: COLORS.textMuted }}>
                   <Clock size={11} />
-                  <span>{staff.since}</span>
+                  <span style={numberStyle}>{staff.since}</span>
                 </div>
               </div>
             );
@@ -331,23 +360,23 @@ export default function Staff() {
       {/* Add Staff Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.3)" }}>
-          <div className="rounded-xl p-5 w-full max-w-md" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+          <div className="rounded-xl p-5 w-full max-w-md" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>Add Staff</h3>
-              <button onClick={() => setShowAddModal(false)} style={{ color: "#aaaaaa" }}><X size={18} /></button>
+              <h3 className="text-lg font-semibold" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif" }}>Add Staff</h3>
+              <button onClick={() => setShowAddModal(false)} style={{ color: COLORS.textMuted }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Full name"
                 className="w-full text-sm px-3 py-2 rounded-lg outline-none"
-                style={{ border: "1px solid #e8e8e3", background: "#fafafa", color: "#111111" }}
+                style={{ border: `1px solid ${COLORS.border}`, background: COLORS.headerBg, color: COLORS.text }}
                 value={newStaff.name}
                 onChange={e => setNewStaff(prev => ({ ...prev, name: e.target.value }))}
               />
               <select
                 className="w-full text-sm px-3 py-2 rounded-lg outline-none"
-                style={{ border: "1px solid #e8e8e3", background: "#fafafa", color: "#111111" }}
+                style={{ border: `1px solid ${COLORS.border}`, background: COLORS.headerBg, color: COLORS.text }}
                 value={newStaff.role}
                 onChange={e => setNewStaff(prev => ({ ...prev, role: e.target.value }))}
               >
@@ -357,7 +386,7 @@ export default function Staff() {
               </select>
               <select
                 className="w-full text-sm px-3 py-2 rounded-lg outline-none"
-                style={{ border: "1px solid #e8e8e3", background: "#fafafa", color: "#111111" }}
+                style={{ border: `1px solid ${COLORS.border}`, background: COLORS.headerBg, color: COLORS.text }}
                 value={newStaff.shift}
                 onChange={e => setNewStaff(prev => ({ ...prev, shift: e.target.value }))}
               >
@@ -369,14 +398,14 @@ export default function Staff() {
                 type="text"
                 placeholder="Location (e.g., Bar 1)"
                 className="w-full text-sm px-3 py-2 rounded-lg outline-none"
-                style={{ border: "1px solid #e8e8e3", background: "#fafafa", color: "#111111" }}
+                style={{ border: `1px solid ${COLORS.border}`, background: COLORS.headerBg, color: COLORS.text }}
                 value={newStaff.location}
                 onChange={e => setNewStaff(prev => ({ ...prev, location: e.target.value }))}
               />
               <button
                 onClick={addStaff}
                 className="w-full text-sm py-2 rounded-lg"
-                style={{ background: "#111111", color: "#ffffff" }}
+                style={{ background: COLORS.accent, color: "#ffffff" }}
               >
                 Add Staff
               </button>

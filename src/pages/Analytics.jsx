@@ -8,18 +8,29 @@ import {
   Tooltip, ResponsiveContainer, Cell
 } from "recharts";
 
+/* ---------- Palette (matched to Overview) ----------
+   Background:      #f5f0e8  (warm cream)
+   Card:            #ffffff
+   Border:          #e8ddc9  (warm sand)
+   Accent:          #c17a4f  (terracotta)
+   Accent soft:      #c17a4f at low opacity (fills, chips)
+   Text primary:    #2b211b  (near-black warm brown)
+   Text secondary:  #9c8f7c  (muted sand-brown)
+   Negative:        #b54a3f  (muted brick red, matches "-2.1%" chip in Overview)
+------------------------------------------------------ */
+
 const revenueDataSets = {
   "This Week": [
-    { day: "Mon", revenue: 4200000 }, { day: "Tue", revenue: 3800000 }, { day: "Wed", revenue: 5100000 },
-    { day: "Thu", revenue: 4700000 }, { day: "Fri", revenue: 6200000 }, { day: "Sat", revenue: 7800000 }, { day: "Sun", revenue: 7100000 },
+    { day: "Mon", revenue: 278 }, { day: "Tue", revenue: 252 }, { day: "Wed", revenue: 338 },
+    { day: "Thu", revenue: 311 }, { day: "Fri", revenue: 411 }, { day: "Sat", revenue: 517 }, { day: "Sun", revenue: 470 },
   ],
   "Last Week": [
-    { day: "Mon", revenue: 3900000 }, { day: "Tue", revenue: 3600000 }, { day: "Wed", revenue: 4800000 },
-    { day: "Thu", revenue: 4400000 }, { day: "Fri", revenue: 5800000 }, { day: "Sat", revenue: 7400000 }, { day: "Sun", revenue: 6800000 },
+    { day: "Mon", revenue: 258 }, { day: "Tue", revenue: 238 }, { day: "Wed", revenue: 318 },
+    { day: "Thu", revenue: 291 }, { day: "Fri", revenue: 384 }, { day: "Sat", revenue: 490 }, { day: "Sun", revenue: 450 },
   ],
   "This Month": [
-    { day: "Week 1", revenue: 28500000 }, { day: "Week 2", revenue: 31200000 },
-    { day: "Week 3", revenue: 29800000 }, { day: "Week 4", revenue: 33500000 },
+    { day: "Week 1", revenue: 1887 }, { day: "Week 2", revenue: 2066 },
+    { day: "Week 3", revenue: 1974 }, { day: "Week 4", revenue: 2219 },
   ],
 };
 
@@ -38,35 +49,58 @@ const topStaff = [
 ];
 
 const dailyStats = {
-  today:     { revenue: 6200000, orders: 47, avgValue: 131900, tables: 18 },
-  yesterday: { revenue: 5800000, orders: 41, avgValue: 141400, tables: 15 },
+  today:     { revenue: 411, orders: 47, avgValue: 8.74, tables: 18 },
+  yesterday: { revenue: 384, orders: 41, avgValue: 9.37, tables: 15 },
 };
 
-const fmt = (v) => `Rp ${v.toLocaleString("id-ID")}`;
+const COLORS = {
+  bg: "#f5f0e8",
+  card: "#ffffff",
+  border: "#e8ddc9",
+  accent: "#c17a4f",
+  accentSoft: "rgba(193, 122, 79, 0.14)",
+  text: "#2b211b",
+  textMuted: "#9c8f7c",
+  negative: "#b54a3f",
+};
+
+const fmt = (v) => `$${v.toLocaleString("en-US")}`;
 const fmtShort = (v) => {
-  if (v >= 1000000) return `${(v / 1000000).toFixed(1)}M`;
-  return `${(v / 1000).toFixed(0)}K`;
+  if (v >= 1000) return `$${(v / 1000).toFixed(1)}K`;
+  return `$${v}`;
 };
 
 function StatCard({ label, value, change, icon: Icon }) {
   const isPositive = change > 0;
   return (
-    <div className="rounded-xl p-3 sm:p-4" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
+    <div className="rounded-xl p-3 sm:p-4" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
       <div className="flex items-start justify-between mb-2 sm:mb-3">
-        <p className="text-xs uppercase tracking-widest" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>{label}</p>
-        <Icon size={16} style={{ color: "#111111", opacity: 0.3 }} />
+        <p className="text-xs uppercase tracking-widest" style={{ color: COLORS.textMuted, letterSpacing: "0.1em" }}>{label}</p>
+        <div
+          className="flex items-center justify-center rounded-lg"
+          style={{ width: 28, height: 28, background: COLORS.accentSoft }}
+        >
+          <Icon size={14} style={{ color: COLORS.accent }} />
+        </div>
       </div>
-      <p className="text-lg sm:text-2xl font-semibold mb-1" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>{value}</p>
+      <p
+        className="text-lg sm:text-2xl font-semibold mb-1"
+        style={{ color: COLORS.text, fontFamily: "'Space Grotesk', sans-serif" }}
+      >
+        {value}
+      </p>
       <div className="flex items-center gap-1">
-        {isPositive
-          ? <ArrowUpRight size={12} style={{ color: "#111111" }} />
-          : <ArrowDownRight size={12} style={{ color: "#cccccc" }} />}
-        <span className="text-xs font-medium hidden sm:inline" style={{ color: isPositive ? "#111111" : "#cccccc" }}>
-          {Math.abs(change)}% vs yesterday
-        </span>
-        <span className="text-xs font-medium sm:hidden" style={{ color: isPositive ? "#111111" : "#cccccc" }}>
+        <span
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-xs font-medium"
+          style={{
+            background: isPositive ? "rgba(58, 122, 76, 0.12)" : "rgba(181, 74, 63, 0.12)",
+            color: isPositive ? "#3a7a4c" : COLORS.negative,
+          }}
+        >
+          {isPositive ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}
           {Math.abs(change)}%
         </span>
+        <span className="text-xs hidden sm:inline" style={{ color: COLORS.textMuted }}>vs yesterday</span>
       </div>
     </div>
   );
@@ -75,10 +109,10 @@ function StatCard({ label, value, change, icon: Icon }) {
 function CustomTooltip({ active, payload, label, format = fmt }) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "#111111", color: "#ffffff" }}>
-        <p className="mb-1" style={{ opacity: 0.7 }}>{label}</p>
+      <div className="rounded-lg px-3 py-2 text-xs" style={{ background: COLORS.text, color: "#fff" }}>
+        <p className="mb-1" style={{ opacity: 0.65 }}>{label}</p>
         {payload.map((entry, idx) => (
-          <p key={idx} style={{ color: "#ffffff" }}>
+          <p key={idx} style={{ color: "#fff", fontFamily: "'Space Grotesk', sans-serif" }}>
             {entry.name}: {format(entry.value)}
           </p>
         ))}
@@ -103,23 +137,23 @@ export default function Analytics() {
   const tablesChange  = calcChange(dailyStats.today.tables,    dailyStats.yesterday.tables);
 
   return (
-    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: "#f5f5f0", minHeight: "100%" }}>
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5" style={{ background: COLORS.bg, minHeight: "100%" }}>
 
       {/* Header */}
       <div className="fade-up">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs uppercase tracking-widest" style={{ color: "#cccccc", letterSpacing: "0.1em" }}>Dashboard</span>
-          <span style={{ color: "#e8e8e3" }}>/</span>
-          <span className="text-xs" style={{ color: "#aaaaaa" }}>Analytics</span>
+          <span className="text-xs uppercase tracking-widest" style={{ color: COLORS.textMuted, letterSpacing: "0.1em" }}>Dashboard</span>
+          <span style={{ color: COLORS.border }}>/</span>
+          <span className="text-xs" style={{ color: COLORS.accent }}>Analytics</span>
         </div>
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h2 className="text-xl sm:text-2xl" style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
+          <h2 className="text-xl sm:text-2xl" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
             Analytics
           </h2>
           <div className="relative">
             <select
               className="text-xs px-3 py-2 pr-7 rounded-lg outline-none appearance-none cursor-pointer"
-              style={{ background: "#ffffff", border: "1px solid #e8e8e3", color: "#555555" }}
+              style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, color: COLORS.text }}
               value={period}
               onChange={e => setPeriod(e.target.value)}
             >
@@ -127,57 +161,55 @@ export default function Analytics() {
               <option>Last Week</option>
               <option>This Month</option>
             </select>
-            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "#aaaaaa" }} />
+            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: COLORS.textMuted }} />
           </div>
         </div>
       </div>
 
-      {/* Stat Cards - 2 col mobile, 4 desktop */}
+      {/* Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 fade-up-1">
-        <StatCard label="Revenue"    value={fmtShort(dailyStats.today.revenue)}   change={revenueChange} icon={DollarSign} />
-        <StatCard label="Orders"     value={dailyStats.today.orders}              change={ordersChange}  icon={ShoppingBag} />
-        <StatCard label="Avg. Order" value={fmtShort(dailyStats.today.avgValue)}  change={avgChange}     icon={TrendingUp} />
-        <StatCard label="Tables"     value={`${dailyStats.today.tables}/20`}      change={tablesChange}  icon={Users} />
+        <StatCard label="Revenue"    value={fmtShort(dailyStats.today.revenue)}          change={revenueChange} icon={DollarSign} />
+        <StatCard label="Orders"     value={dailyStats.today.orders}                     change={ordersChange}  icon={ShoppingBag} />
+        <StatCard label="Avg. Order" value={`$${dailyStats.today.avgValue.toFixed(2)}`}  change={avgChange}     icon={TrendingUp} />
+        <StatCard label="Tables"     value={`${dailyStats.today.tables}/20`}             change={tablesChange}  icon={Users} />
       </div>
 
-      {/* Charts - stack on mobile, side by side on desktop */}
+      {/* Charts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 fade-up-2">
-        {/* Revenue Trend */}
-        <div className="sm:col-span-2 rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+        <div className="sm:col-span-2 rounded-xl p-4 sm:p-5" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif" }}>
             Revenue Trend
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={revenueData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#111111" stopOpacity={0.08} />
-                  <stop offset="95%" stopColor="#111111" stopOpacity={0} />
+                  <stop offset="5%"  stopColor={COLORS.accent} stopOpacity={0.22} />
+                  <stop offset="95%" stopColor={COLORS.accent} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
-              <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} tickFormatter={fmtShort} />
+              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: COLORS.textMuted }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: COLORS.textMuted }} axisLine={false} tickLine={false} tickFormatter={fmtShort} />
               <Tooltip content={<CustomTooltip format={fmt} />} />
-              <Area type="monotone" dataKey="revenue" stroke="#111111" strokeWidth={1.5} fill="url(#revGradient)" />
+              <Area type="monotone" dataKey="revenue" stroke={COLORS.accent} strokeWidth={2} fill="url(#revGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Category Breakdown */}
-        <div className="rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+        <div className="rounded-xl p-4 sm:p-5" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif" }}>
             By Category
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={categoryData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0eb" />
-              <XAxis dataKey="category" tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#cccccc" }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
+              <XAxis dataKey="category" tick={{ fontSize: 10, fill: COLORS.textMuted }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: COLORS.textMuted }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip format={(v) => `${v} items`} />} />
               <Bar dataKey="sales" radius={[4, 4, 0, 0]} barSize={24}>
                 {categoryData.map((entry, index) => (
-                  <Cell key={index} fill={index === 0 ? "#111111" : index === 1 ? "#cccccc" : "#e8e8e3"} />
+                  <Cell key={index} fill={index === 0 ? COLORS.accent : index === 1 ? "#e3c4a8" : COLORS.border} />
                 ))}
               </Bar>
             </BarChart>
@@ -186,8 +218,8 @@ export default function Analytics() {
       </div>
 
       {/* Top Staff */}
-      <div className="rounded-xl p-4 sm:p-5 fade-up-3" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-        <h3 className="text-sm font-semibold mb-4" style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}>
+      <div className="rounded-xl p-4 sm:p-5 fade-up-3" style={{ background: COLORS.card, border: `1px solid ${COLORS.border}` }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: COLORS.text, fontFamily: "'Playfair Display', serif" }}>
           Top Performing Staff
         </h3>
         <div className="space-y-2">
@@ -195,28 +227,36 @@ export default function Analytics() {
             <div
               key={s.name}
               className="flex items-center gap-2 sm:gap-3 py-2"
-              style={{ borderBottom: i < topStaff.length - 1 ? "1px solid #f5f5f0" : "none" }}
+              style={{ borderBottom: i < topStaff.length - 1 ? `1px solid ${COLORS.bg}` : "none" }}
             >
-              <span className="text-xs font-mono w-4 flex-shrink-0" style={{ color: i < 3 ? "#111111" : "#cccccc", fontWeight: i === 0 ? 700 : 400 }}>
+              <span
+                className="text-xs w-4 flex-shrink-0"
+                style={{ color: i < 3 ? COLORS.accent : COLORS.textMuted, fontWeight: i === 0 ? 700 : 400, fontFamily: "'Space Grotesk', sans-serif" }}
+              >
                 {i + 1}
               </span>
               <div
                 className="flex items-center justify-center rounded-full flex-shrink-0"
-                style={{ width: 28, height: 28, background: i === 0 ? "#111111" : "#f5f5f0", color: i === 0 ? "#ffffff" : "#aaaaaa", fontSize: 11, fontWeight: 600 }}
+                style={{
+                  width: 28, height: 28,
+                  background: i === 0 ? COLORS.accent : COLORS.bg,
+                  color: i === 0 ? "#ffffff" : COLORS.textMuted,
+                  fontSize: 11, fontWeight: 600,
+                }}
               >
                 {s.name.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate" style={{ color: "#111111" }}>{s.name}</p>
-                <p className="text-xs" style={{ color: "#aaaaaa" }}>{s.role}</p>
+                <p className="text-sm font-medium truncate" style={{ color: COLORS.text }}>{s.name}</p>
+                <p className="text-xs" style={{ color: COLORS.textMuted }}>{s.role}</p>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-sm font-mono font-medium" style={{ color: "#111111" }}>{s.orders}</p>
-                <p className="text-xs hidden sm:block" style={{ color: "#aaaaaa" }}>orders</p>
+                <p className="text-sm font-medium" style={{ color: COLORS.text, fontFamily: "'Space Grotesk', sans-serif" }}>{s.orders}</p>
+                <p className="text-xs hidden sm:block" style={{ color: COLORS.textMuted }}>orders</p>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
-                <Star size={12} style={{ color: "#111111", fill: "#111111" }} />
-                <span className="text-sm font-mono" style={{ color: "#111111" }}>{s.rating}</span>
+                <Star size={12} style={{ color: COLORS.accent, fill: COLORS.accent }} />
+                <span className="text-sm" style={{ color: COLORS.text, fontFamily: "'Space Grotesk', sans-serif" }}>{s.rating}</span>
               </div>
             </div>
           ))}

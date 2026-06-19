@@ -1,79 +1,84 @@
 import { recentOrders } from "../../data/mockData";
 
-const statusDot = {
-  Completed: "#3a5a40",
-  Serving: "#8b6f4c",
-  Cancelled: "#cccccc",
-};
-
-const statusTextColor = {
-  Completed: "#3a5a40",
-  Serving: "#8b6f4c",
-  Cancelled: "#aaaaaa",
+const statusStyle = {
+  Completed: { dot: "#5C7A4F", text: "#5C7A4F", bg: "var(--color-success-bg)" },
+  Serving: { dot: "#B8732E", text: "#B8732E", bg: "var(--color-warning-bg)" },
+  Cancelled: { dot: "#A8453E", text: "#A8453E", bg: "var(--color-danger-bg)" },
 };
 
 export default function RecentOrders() {
   return (
-    <div className="rounded-xl p-4 sm:p-5" style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}>
-      <h3
-        className="text-sm font-semibold mb-4"
-        style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}
-      >
-        Recent Orders
-      </h3>
-      <div className="space-y-1">
-        {recentOrders.map((order) => (
-          <div
-            key={order.id}
-            className="flex items-center gap-2 sm:gap-3 py-2 px-2 rounded-lg transition-colors hover:bg-[#fafafa]"
-            style={{ borderBottom: "1px solid #f5f5f0" }}
-          >
-            {/* Left side */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span
-                  className="text-xs font-mono flex-shrink-0"
-                  style={{ color: "#111111", fontWeight: 500 }}
-                >
-                  {order.id}
-                </span>
-                <span
-                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ background: statusDot[order.status] }}
-                />
-                <span
-                  className="text-xs font-medium flex-shrink-0"
-                  style={{ color: statusTextColor[order.status] }}
-                >
-                  {order.status}
-                </span>
-              </div>
-              <p
-                className="text-xs mt-0.5 truncate"
-                style={{ color: "#888888", maxWidth: "100%" }}
-              >
-                {order.items}
-              </p>
-            </div>
+    <div
+      className="rounded-2xl p-5 sm:p-6 h-full"
+      style={{ background: "var(--bg-card)", border: "1px solid var(--color-latte)", boxShadow: "var(--shadow-sm)" }}
+    >
+      <div className="mb-5">
+        <h3
+          className="text-[15px] mb-0.5"
+          style={{ color: "var(--color-espresso)", fontFamily: "var(--font-serif)", fontWeight: 600 }}
+        >
+          Recent orders
+        </h3>
+        <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+          Latest activity from the floor
+        </p>
+      </div>
 
-            {/* Right side */}
-            <div className="text-right flex-shrink-0 ml-auto">
-              <p
-                className="text-xs font-semibold"
-                style={{
-                  fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
-                  color: "#111111",
-                  fontSize: "clamp(10px, 2.5vw, 12px)",
-                }}
-              >
-                {order.amount}
-              </p>
-              <p className="text-[10px]" style={{ color: "#cccccc" }}>
-                {order.time}
-              </p>
+      <div className="space-y-1">
+        {recentOrders.map((order) => {
+          const s = statusStyle[order.status] || statusStyle.Completed;
+          return (
+            <div
+              key={order.id}
+              className="flex items-center gap-3 py-3 px-2.5 rounded-xl transition-colors"
+              style={{ borderBottom: "1px solid var(--color-latte)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-surface)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              {/* Left side */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <span
+                    className="text-[12px] font-medium flex-shrink-0"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-espresso)" }}
+                  >
+                    {order.id}
+                  </span>
+                  <span
+                    className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+                    style={{ color: s.text, background: s.bg }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.dot }} />
+                    {order.status}
+                  </span>
+                </div>
+                <p
+                  className="text-[12px] truncate"
+                  style={{ color: "var(--text-muted)", maxWidth: "100%" }}
+                >
+                  {order.items}
+                </p>
+              </div>
+
+              {/* Right side */}
+              <div className="text-right flex-shrink-0 ml-auto">
+                <p
+                  className="font-semibold"
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    color: "var(--color-espresso)",
+                    fontSize: "clamp(11px, 2.5vw, 13px)",
+                  }}
+                >
+                  {order.amount}
+                </p>
+                <p className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>
+                  {order.time}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

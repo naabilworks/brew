@@ -1,4 +1,4 @@
-import { DollarSign, ShoppingBag, TrendingUp, Users } from "lucide-react";
+import { DollarSign, ShoppingBag, TrendingUp, TrendingDown, Users } from "lucide-react";
 
 const iconMap = {
   DollarSign: DollarSign,
@@ -10,43 +10,66 @@ const iconMap = {
 export default function StatCard({ label, value, change, trend, icon, delay = 0 }) {
   const Icon = iconMap[icon] || DollarSign;
   const isUp = trend === "up";
+  const TrendIcon = isUp ? TrendingUp : TrendingDown;
+
   return (
     <div
-      className="rounded-xl p-4"
+      className="rounded-2xl p-5"
       style={{
-        background: "#ffffff",
-        border: "1px solid #e8e8e3",
+        background: "var(--bg-card)",
+        border: "1px solid var(--color-latte)",
+        boxShadow: "var(--shadow-sm)",
+        transition: "transform var(--duration-base) var(--ease-default), box-shadow var(--duration-base) var(--ease-default)",
         animation: `fadeUp 0.4s ease-out ${delay * 0.1}s both`,
       }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.boxShadow = "var(--shadow-md)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+      }}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-4">
         <p
-          className="text-xs uppercase tracking-widest"
-          style={{ color: "#cccccc", letterSpacing: "0.1em" }}
+          className="text-[11px] font-semibold uppercase"
+          style={{ color: "var(--text-muted)", letterSpacing: "0.08em" }}
         >
           {label}
         </p>
-        <Icon size={16} style={{ color: "#111111", opacity: 0.3 }} />
+        <div
+          className="flex items-center justify-center rounded-xl flex-shrink-0"
+          style={{ width: 34, height: 34, background: "var(--bg-surface)" }}
+        >
+          <Icon size={16} style={{ color: "var(--color-espresso)" }} strokeWidth={2} />
+        </div>
       </div>
+
       <p
-        className="font-bold mb-1 tracking-tight break-all"
+        className="font-bold mb-3 tracking-tight break-all"
         style={{
-          color: "#111111",
-          fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
-          fontSize: "clamp(18px, 4vw, 26px)", // ← responsive font size
+          color: "var(--color-espresso)",
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: "clamp(20px, 4vw, 27px)",
           lineHeight: 1.1,
         }}
       >
         {value}
       </p>
-      <div className="flex items-center gap-1 flex-wrap">
+
+      <div className="flex items-center gap-2 flex-wrap">
         <span
-          className="text-xs font-medium"
-          style={{ color: isUp ? "#3a5a40" : "#aaaaaa" }}
+          className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+          style={{
+            color: isUp ? "var(--color-success)" : "var(--color-danger)",
+            background: isUp ? "var(--color-success-bg)" : "var(--color-danger-bg)",
+          }}
         >
+          <TrendIcon size={11} strokeWidth={2.5} />
           {change}
         </span>
-        <span className="text-xs" style={{ color: "#aaaaaa" }}>
+        <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
           vs yesterday
         </span>
       </div>

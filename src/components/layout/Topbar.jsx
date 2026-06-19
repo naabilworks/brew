@@ -42,47 +42,49 @@ export default function Topbar({ onMenuClick }) {
 
   return (
     <header
-      className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0"
-      style={{ borderColor: "#e8e8e3", background: "#ffffff" }}
+      className="flex items-center justify-between px-6 flex-shrink-0"
+      style={{
+        height: 72,
+        borderBottom: "1px solid var(--color-latte)",
+        background: "var(--bg-card)",
+      }}
     >
       {/* Left: hamburger + greeting */}
-      <div className="flex items-center gap-3">
-        {/* Hamburger - mobile only */}
+      <div className="flex items-center gap-4">
         <button
           onClick={onMenuClick}
-          className="flex lg:hidden items-center justify-center rounded-lg"
-          style={{ width: 36, height: 36, background: "#f5f5f0", border: "1px solid #e8e8e3" }}
+          className="flex lg:hidden items-center justify-center rounded-xl"
+          style={{ width: 38, height: 38, background: "var(--bg-surface)" }}
         >
-          <Menu size={16} style={{ color: "#555555" }} />
+          <Menu size={16} style={{ color: "var(--color-roasted)" }} />
         </button>
 
-        {/* Greeting */}
         <div>
           <h1
-            className="text-base font-semibold leading-tight"
-            style={{ color: "#111111", fontFamily: "'Playfair Display', serif" }}
+            className="text-lg leading-tight"
+            style={{ color: "var(--color-espresso)", fontFamily: "var(--font-serif)", fontWeight: 600 }}
           >
             {greeting}, Manager
           </h1>
-          <p className="text-xs mt-0.5 hidden sm:block" style={{ color: "#aaaaaa" }}>
+          <p className="text-xs mt-0.5 hidden sm:block" style={{ color: "var(--text-muted)" }}>
             {dateStr}
           </p>
         </div>
       </div>
 
       {/* Right: search, notifications, profile */}
-      <div className="flex items-center gap-2">
-        {/* Search - hidden on mobile */}
+      <div className="flex items-center gap-3">
+        {/* Search */}
         <div
-          className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg"
-          style={{ background: "#f5f5f0", border: "1px solid #e8e8e3" }}
+          className="hidden sm:flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors"
+          style={{ background: "var(--bg-surface)", width: 220 }}
         >
-          <Search size={13} style={{ color: "#aaaaaa" }} />
+          <Search size={14} style={{ color: "var(--text-muted)" }} />
           <input
             type="text"
-            placeholder="Search..."
-            className="bg-transparent text-xs outline-none w-32"
-            style={{ color: "#555555" }}
+            placeholder="Search anything..."
+            className="bg-transparent text-[13px] outline-none w-full"
+            style={{ color: "var(--color-espresso)" }}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
@@ -95,19 +97,18 @@ export default function Topbar({ onMenuClick }) {
               setShowNotif(!showNotif);
               setShowProfile(false);
             }}
-            className="relative flex items-center justify-center rounded-lg"
+            className="relative flex items-center justify-center rounded-xl transition-colors"
             style={{
-              width: 36,
-              height: 36,
-              background: showNotif ? "#f0f0eb" : "#f5f5f0",
-              border: "1px solid #e8e8e3",
+              width: 40,
+              height: 40,
+              background: showNotif ? "var(--bg-hover)" : "var(--bg-surface)",
             }}
           >
-            <Bell size={14} style={{ color: "#aaaaaa" }} />
+            <Bell size={15} style={{ color: "var(--color-roasted)" }} />
             {notifications.length > 0 && (
               <span
-                className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-medium"
-                style={{ background: "#111111", color: "#ffffff" }}
+                className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold"
+                style={{ background: "var(--color-crema)", color: "#ffffff" }}
               >
                 {notifications.length}
               </span>
@@ -116,25 +117,27 @@ export default function Topbar({ onMenuClick }) {
 
           {showNotif && (
             <div
-              className="absolute right-0 mt-2 w-64 rounded-lg shadow-sm z-50"
-              style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}
+              className="absolute right-0 mt-2.5 w-72 rounded-2xl z-50 overflow-hidden"
+              style={{ background: "var(--bg-card)", border: "1px solid var(--color-latte)", boxShadow: "var(--shadow-lg)" }}
             >
-              <div className="p-3 border-b" style={{ borderColor: "#f5f5f0" }}>
-                <p className="text-xs font-semibold" style={{ color: "#111111" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--color-latte)" }}>
+                <p className="text-[13px] font-semibold" style={{ color: "var(--color-espresso)" }}>
                   Notifications
                 </p>
               </div>
-              <div className="max-h-48 overflow-y-auto">
+              <div className="max-h-56 overflow-y-auto">
                 {notifications.map((n) => (
                   <div
                     key={n.id}
-                    className="px-3 py-2 border-b last:border-b-0 hover:bg-[#fafafa] cursor-pointer transition-colors"
-                    style={{ borderColor: "#f5f5f0" }}
+                    className="px-4 py-3 cursor-pointer transition-colors"
+                    style={{ borderBottom: "1px solid var(--color-latte)" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--bg-surface)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                   >
-                    <p className="text-xs" style={{ color: "#555555" }}>
+                    <p className="text-[13px]" style={{ color: "var(--color-roasted)" }}>
                       {n.text}
                     </p>
-                    <p className="text-[10px] mt-0.5" style={{ color: "#cccccc" }}>
+                    <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>
                       {n.time}
                     </p>
                   </div>
@@ -151,25 +154,22 @@ export default function Topbar({ onMenuClick }) {
               setShowProfile(!showProfile);
               setShowNotif(false);
             }}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg"
-            style={{
-              background: showProfile ? "#f0f0eb" : "#f5f5f0",
-              border: "1px solid #e8e8e3",
-            }}
+            className="flex items-center gap-2.5 pl-2 pr-3 py-2 rounded-xl transition-colors"
+            style={{ background: showProfile ? "var(--bg-hover)" : "var(--bg-surface)" }}
           >
             <div
-              className="rounded-full flex items-center justify-center text-xs font-medium"
-              style={{ width: 22, height: 22, background: "#111111", color: "#ffffff" }}
+              className="rounded-full flex items-center justify-center text-xs font-bold"
+              style={{ width: 26, height: 26, background: "var(--color-espresso)", color: "#ffffff" }}
             >
               M
             </div>
-            <span className="text-xs hidden sm:block" style={{ color: "#555555" }}>
+            <span className="text-[13px] font-medium hidden sm:block" style={{ color: "var(--color-espresso)" }}>
               Manager
             </span>
             <ChevronDown
-              size={12}
+              size={13}
               style={{
-                color: "#aaaaaa",
+                color: "var(--text-muted)",
                 transform: showProfile ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.2s",
               }}
@@ -178,18 +178,18 @@ export default function Topbar({ onMenuClick }) {
 
           {showProfile && (
             <div
-              className="absolute right-0 mt-2 w-48 rounded-lg shadow-sm z-50"
-              style={{ background: "#ffffff", border: "1px solid #e8e8e3" }}
+              className="absolute right-0 mt-2.5 w-52 rounded-2xl z-50 overflow-hidden"
+              style={{ background: "var(--bg-card)", border: "1px solid var(--color-latte)", boxShadow: "var(--shadow-lg)" }}
             >
-              <div className="p-2 border-b" style={{ borderColor: "#f5f5f0" }}>
-                <p className="text-xs font-medium" style={{ color: "#111111" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--color-latte)" }}>
+                <p className="text-[13px] font-semibold" style={{ color: "var(--color-espresso)" }}>
                   Manager
                 </p>
-                <p className="text-[10px]" style={{ color: "#cccccc" }}>
+                <p className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>
                   manager@brew.id
                 </p>
               </div>
-              <div className="py-1">
+              <div className="py-1.5">
                 {[
                   { icon: User, label: "Profile", action: () => alert("Profile page") },
                   {
@@ -212,10 +212,12 @@ export default function Topbar({ onMenuClick }) {
                       setShowProfile(false);
                       action();
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs hover:bg-[#fafafa] transition-colors"
-                    style={{ color: "#555555" }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] transition-colors font-medium"
+                    style={{ color: "var(--color-roasted)" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--bg-surface)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                   >
-                    <Icon size={13} style={{ color: "#aaaaaa" }} />
+                    <Icon size={14} style={{ color: "var(--color-crema)" }} />
                     {label}
                   </button>
                 ))}

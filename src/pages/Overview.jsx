@@ -7,43 +7,64 @@ import { stats } from "../data/mockData";
 
 export default function Overview() {
   return (
-    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto h-full" style={{ background: "#f5f5f0" }}>
-      
-      {/* Page header */}
-      <div className="fade-up">
-        <div className="flex items-center gap-2 mb-1">
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: "#cccccc", letterSpacing: "0.1em" }}
-          >
-            Dashboard
-          </span>
-          <span style={{ color: "#e8e8e3" }}>/</span>
-          <span className="text-xs" style={{ color: "#aaaaaa" }}>Overview</span>
-        </div>
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h2
-            className="text-xl sm:text-2xl"
-            style={{ color: "#111111", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}
-          >
-            Today's Summary
-          </h2>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#111111" }} />
-            <span className="text-xs" style={{ color: "#aaaaaa" }}>Live · updates every 30s</span>
+    <div
+      className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 overflow-y-auto h-full"
+      style={{ background: "var(--bg-main)" }}
+    >
+
+      {/* 1. Page Header & Breadcrumbs */}
+      <div className="fade-up flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span
+              className="text-[10px] sm:text-xs font-bold uppercase"
+              style={{ color: "var(--text-muted)", letterSpacing: "0.1em" }}
+            >
+              Dashboard
+            </span>
+            <span style={{ color: "var(--color-latte)" }}>/</span>
+            <span className="text-[10px] sm:text-xs font-medium" style={{ color: "var(--color-roasted)" }}>
+              Overview
+            </span>
           </div>
+          <h2
+            className="text-2xl sm:text-3xl tracking-tight"
+            style={{ color: "var(--color-espresso)", fontFamily: "var(--font-serif)", fontWeight: 700 }}
+          >
+            Today's summary
+          </h2>
+        </div>
+
+        {/* 2. Live Indicator */}
+        <div
+          className="flex items-center gap-2 px-3.5 py-2 rounded-full w-fit"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--color-latte)", boxShadow: "var(--shadow-xs)" }}
+        >
+          <span className="relative flex h-2 w-2">
+            <span
+              className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+              style={{ backgroundColor: "var(--color-crema)" }}
+            ></span>
+            <span
+              className="relative inline-flex rounded-full h-2 w-2"
+              style={{ backgroundColor: "var(--color-crema)" }}
+            ></span>
+          </span>
+          <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+            Live · updates every 30s
+          </span>
         </div>
       </div>
 
-      {/* Stat cards - 1 col mobile, 2 tablet, 4 desktop */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+      {/* 3. Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((s, i) => (
           <StatCard key={s.id} {...s} delay={i} />
         ))}
       </div>
 
-      {/* Charts row - stack on mobile, side by side on desktop */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4">
+      {/* 4. Charts Row */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         <div className="xl:col-span-2">
           <RevenueChart />
         </div>
@@ -52,8 +73,8 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Bottom row - stack on mobile, side by side on desktop */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 pb-4">
+      {/* 5. Bottom Row */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 pb-4">
         <div className="xl:col-span-2">
           <RecentOrders />
         </div>
